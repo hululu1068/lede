@@ -1,4 +1,4 @@
-欢迎来到Lean的Openwrt源码仓库！
+欢迎来到hululu1068的Openwrt源码仓库！fork自Lean的源码，根据自己的需要做了下添加。
 =
 
 [English](./README_EN.md)
