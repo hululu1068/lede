@@ -53,8 +53,7 @@ jobs:
           sudo -E apt-get clean
           
           
-          
-          
+          # ============================添加自定义插件主题源===================================
           
       - name: 自定义插件主题。
         run: |
@@ -65,17 +64,15 @@ jobs:
           git clone https://github.com/kenzok8/openwrt-packages.git
           
           
-          
-          
 
-          # sudo mkdir -p -m 777 /mnt/openwrt/bin /mnt/openwrt/build_dir/host /mnt/openwrt/build_dir/hostpkg /mnt/openwrt/dl /mnt/openwrt/feeds /mnt/openwrt/staging_dir
-          # ln -s /mnt/openwrt/bin ./bin
-          # mkdir -p ./build_dir
-          # ln -s -f /mnt/openwrt/build_dir/host ./build_dir/host
-          # ln -s -f /mnt/openwrt/build_dir/hostpkg ./build_dir/hostpkg
-          # ln -s /mnt/openwrt/dl ./dl
-          # ln -s /mnt/openwrt/feeds ./feeds
-          # ln -s /mnt/openwrt/staging_dir ./staging_dir
+          sudo mkdir -p -m 777 /mnt/openwrt/bin /mnt/openwrt/build_dir/host /mnt/openwrt/build_dir/hostpkg /mnt/openwrt/dl /mnt/openwrt/feeds /mnt/openwrt/staging_dir
+          ln -s /mnt/openwrt/bin ./bin
+          mkdir -p ./build_dir
+          ln -s -f /mnt/openwrt/build_dir/host ./build_dir/host
+          ln -s -f /mnt/openwrt/build_dir/hostpkg ./build_dir/hostpkg
+          ln -s /mnt/openwrt/dl ./dl
+          ln -s /mnt/openwrt/feeds ./feeds
+          ln -s /mnt/openwrt/staging_dir ./staging_dir
 
           df -h
 
@@ -101,8 +98,8 @@ jobs:
           CONFIG_TARGET_x86_64_Generic=y
           
           CONFIG_TARGET_IMAGES_GZIP=y
-          CONFIG_KERNEL_BUILD_USER="OpenWrt-CI"
-          CONFIG_KERNEL_BUILD_DOMAIN="Azure"
+          CONFIG_GRUB_IMAGES=y
+          CONFIG_GRUB_EFI_IMAGES=y
           EOF
           
           # 设置固件大小:
@@ -111,10 +108,6 @@ jobs:
           CONFIG_TARGET_ROOTFS_PARTSIZE=400
           EOF
           
-          # 编译UEFI固件:
-          # cat >> .config <<EOF
-          # CONFIG_EFI_IMAGES=y
-          # EOF
 
           # IPv6支持:
           # cat >> .config <<EOF
@@ -226,7 +219,7 @@ jobs:
         if: github.event == 'release'
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.YOURTOKEN }}
+          repo_token: ${{ secrets.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 }}
           file: ./artifact/firmware/*
           tag: ${{ github.ref }}
           file_glob: true
