@@ -156,8 +156,8 @@ jobs:
           CONFIG_PACKAGE_luci-app-netdata=y
           CONFIG_PACKAGE_luci-app-smartdns=y
           CONFIG_PACKAGE_luci-app-unblockmusic=y
-          CONFIG_UnblockNeteaseMusic_Go=y
-          CONFIG_UnblockNeteaseMusic_NodeJS=y
+          # CONFIG_UnblockNeteaseMusic_Go=y
+          # CONFIG_UnblockNeteaseMusic_NodeJS=y
           CONFIG_PACKAGE_luci-app-ttyd=y
           CONFIG_PACKAGE_luci-app-upnp=y
           CONFIG_PACKAGE_luci-app-wol=y
@@ -177,7 +177,6 @@ jobs:
           # 
 
           sed -i 's/^[ \t]*//g' ./.config
-          chmod +x ./customize.sh && ./customize.sh
           make defconfig
 
       - name: Make download 下载包文件
