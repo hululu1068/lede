@@ -178,7 +178,7 @@ jobs:
 
           # sed -i 's/^[ \t]*//g' ./.config
           # make defconfig
-          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE ./.config
           chmod +x ./customize.sh && ./customize.sh
           cd openwrt && make defconfig
 
