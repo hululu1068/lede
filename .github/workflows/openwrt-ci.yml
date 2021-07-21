@@ -10,18 +10,24 @@
 name: Build OpenWrt-x86_64
 
 on:
+# Release 发布触发
+  release:
+    types: [published]
+    
+  # 编辑触发 
   #push:
   #  branches: 
   #    - master
 
+  # 定时触发 每48小时编译
   #schedule:
-  #  - cron: 0 8 * * 5
+  #  - cron: 0 */48 * * *
   
+  # 点赞触发
   watch:
     types: [started]
     
-  release:
-    types: [published]
+
 
 jobs:
 
@@ -35,12 +41,12 @@ jobs:
 
     steps:
 
-      - name: Checkout
+      - name: Checkout 检查
         uses: actions/checkout@v2
         with:
           ref: master
 
-      - name: Space cleanup
+      - name: Space cleanup 初始化环境
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
@@ -76,12 +82,12 @@ jobs:
 
           df -h
 
-      - name: Update feeds
+      - name: Update feeds 跟新&安装feeds
         run: |
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: Generate configuration file
+      - name: Generate configuration file 自定义配置文件
         run: |
           rm -f ./.config*
           touch ./.config
@@ -173,13 +179,13 @@ jobs:
           sed -i 's/^[ \t]*//g' ./.config
           make defconfig
 
-      - name: Make download
+      - name: Make download 下载包文件
         run: |
           make download -j8 || make download -j1 V=s
           rm -rf $(find ./dl/ -size -1024c)
           df -h
 
-      - name: Compile firmware
+      - name: Compile firmware 编译固件
         run: |
           make -j$(nproc) || make -j1 V=s
           echo "======================="
@@ -190,7 +196,7 @@ jobs:
           du -h ./ --max-depth=1
           du -h /mnt/openwrt/ --max-depth=1 || true
 
-      - name: Prepare artifact
+      - name: Prepare artifact 整理编译工程
         run: |
           mkdir -p ./artifact/firmware
           mkdir -p ./artifact/package
@@ -200,25 +206,25 @@ jobs:
           cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
           cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
 
-      - name: Deliver buildinfo
+      - name: Deliver buildinfo 交付构建信息
         uses: actions/upload-artifact@v2
         with:
           name: OpenWrt_buildinfo
           path: ./artifact/buildinfo/
 
-      - name: Deliver package
+      - name: Deliver package 交付插件
         uses: actions/upload-artifact@v2
         with:
           name: OpenWrt_package
           path: ./artifact/package/
 
-      - name: Deliver firmware
+      - name: Deliver firmware 交付固件
         uses: actions/upload-artifact@v2
         with:
           name: OpenWrt_firmware
           path: ./bin/targets/
 
-      - name: Upload release asset
+      - name: Upload release asset 上传发布文件
         if: github.event == 'release'
         uses: svenstaro/upload-release-action@v2
         with:
